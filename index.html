@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html ng-app="minhaApp">
+	<head>
+		<meta charset="UTF-8">
+		<title>CRUD com AngularJS</title>
+		<script type="text/javascript" src="js/angular.min.js"> 
+		
+		</script>
+	</head>	
+	<body ng-controller="controlaProdutos">
+	
+		<table cellpadding="2" cellspacing="2" border="1"> 
+			<tr>
+				<th> Código </th>
+				<th> Nome </th>
+				<th> Preço </th>
+				<th> Quantidade </th>
+				<th> Opções </th>
+			</tr>
+			<tr ng-repeat="produto in listaProdutos">
+				<td> {{produto.codigo}} </td>
+				<td> {{produto.nome}} </td>
+				<td> {{produto.preco}}</td>
+				<td> {{produto.quantidade}} </td>
+				<td> 
+					<a href="#" ng-click="remove(produto.codigo)"> Remove </a> | 
+					<a href="#" ng-click="selecionaEdicao(produto.codigo)"> Edita </a>
+				</td>
+			</tr>
+				 
+		</table>
+		<h3> Informação do Produto </h3>
+		<table cellpadding="2" cellspacing="2">
+			<tr> 
+				<td> Código </td>
+				<td> <input type="text" ng-model="codigo"> </td>
+			</tr>
+			<tr> 
+				<td> Nome </td>
+				<td> <input type="text" ng-model="nome"> </td>
+			</tr>
+			<tr> 
+				<td> Preço </td>
+				<td> <input type="text" ng-model="preco"> </td>
+			</tr>
+			<tr> 
+				<td> Quantidade </td>
+				<td> <input type="text" ng-model="quantidade"> </td>
+			</tr>
+			<tr> 
+				<td> &nbsp; </td>
+				<td> 
+					<input type="button" value="Adiciona" ng-click="adiciona()"> 
+					<input type="button" value="Atualiza" ng-click="atualiza()"> 
+				</td>
+			</tr>
+			
+		</table> 
+		
+		<script type="text/javascript">
+			var myapp = angular.module('minhaApp', []);
+			myapp.controller('controlaProdutos', function($scope){
+				/* define a variável listaProdutos
+				/* alimentação da listaProdutos */
+				$scope.listaProdutos = [
+				   {codigo:'p01', nome:'Produto 1', preco:1000, quantidade: 10},
+				   {codigo:'p02', nome:'Produto 2', preco:2000, quantidade: 20},
+				   {codigo:'p03', nome:'Produto 3', preco:3000, quantidade: 30},
+				   {codigo:'p04', nome:'Produto 4', preco:4000, quantidade: 40}
+				];
+				
+				$scope.remove = function(codigo){
+					var result = confirm('Are you sure?');
+					if (result == true){
+						var index = getSelectedIndex(codigo);
+						$scope.listaProdutos.splice(index, 1);
+					}
+				}
+				
+				$scope.selecionaEdicao = function(codigo){
+					var index = getSelectedIndex(codigo);
+					var product = $scope.listaProdutos[index];
+					$scope.codigo = product.codigo;
+					$scope.nome = product.nome;
+					$scope.preco = product.preco;
+					$scope.quantidade = product.quantidade;
+
+				} 
+				
+				$scope.adiciona = function(){
+					$scope.listaProdutos.push({
+						codigo:$scope.codigo, nome:$scope.nome, preco:$scope.preco, quantidade: $scope.quantidade
+					});
+					
+					$scope.codigo = '';
+					$scope.nome = '';
+					$scope.preco = '';
+					$scope.quantidade = '';
+				};
+				
+				$scope.atualiza = function(){
+				var index = getSelectedIndex($scope.codigo);
+				
+				if (index == -1) {
+					confirm("Produto não encontrado");
+				}
+				else {
+					$scope.listaProdutos[index].nome = $scope.nome;
+					$scope.listaProdutos[index].preco = $scope.preco;
+					$scope.listaProdutos[index].quantidade = $scope.quantidade;
+				}
+				};
+				
+				function getSelectedIndex(codigo){
+					for(var i=0;i<$scope.listaProdutos.length;i++){
+						if ($scope.listaProdutos[i].codigo == codigo){
+							return i;
+						}
+					}
+					return -1;
+				}
+			});
+		</script>
+	</body>
+</html>
